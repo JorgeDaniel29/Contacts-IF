@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">Contacts</string>
+    <string name="title_activity_contacts_detail">ContactsDetail</string>
+    <string name="action_settings">Settings</string>
+    <string name="parse_error">Parse error</string>
+    <string name="fullname">{LASTNAME} {FIRSTNAME}</string>
+    <string name="title_activity_photo_fullscreen">PhotoFullscreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="phones">Phones</string>
+    <string name="address">Address</string>
+    <string name="birthday">Birthday</string>
+    <string name="title_home">House</string>
+    <string name="title_cellphone">Cellphone</string>
+    <string name="title_office">Office</string>
+    <string name="title_detail">Detail</string>
+    <string name="contact_detail">Contact detail</string>
+    <string name="contact">Contacts</string>
+    <string name="not_load_image">Could not load image</string>
+    <string name="not_have_photo">Does not have a photo</string>
+    <string name="phones_message">The contact not have this phone</string>
+    <string name="network_failed">Network failure</string>
+    <string name="unknown_error">Unknown error</string>
+    <string name="server_broken">Server broken</string>
+    <string name="not_found">Not found</string>
+</resources>
