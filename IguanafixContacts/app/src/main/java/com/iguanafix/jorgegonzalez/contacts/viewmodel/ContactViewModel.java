@@ -1,6 +1,7 @@
 package com.iguanafix.jorgegonzalez.contacts.viewmodel;
 
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -27,7 +28,7 @@ import retrofit2.Response;
 public class ContactViewModel extends ViewModel {
     private LoadingData mLoadDataListener;
     private Contact mContact;
-    private LiveData<ContactApiResponse> mLiveListContacts;
+    private MutableLiveData<ContactApiResponse> mLiveListContacts = new MutableLiveData<>();
     private ContactsRepository mRepository = new ContactsRepository();
 
     public void setListener(LoadingData listener){
@@ -78,11 +79,8 @@ public class ContactViewModel extends ViewModel {
         });
     }
 
-    public void loadContacts(Context context){
-        if(mLiveListContacts != null)
-            return;
-
-        mLiveListContacts = mRepository.getConstacts(context);
+    public void loadContacts(){
+        mRepository.getConstacts(mLiveListContacts);
     }
 
     public LiveData<ContactApiResponse> getListContacts(){

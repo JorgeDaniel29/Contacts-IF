@@ -1,8 +1,6 @@
 package com.iguanafix.jorgegonzalez.contacts.repositories;
 
-import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
-import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.iguanafix.jorgegonzalez.contacts.R;
@@ -23,13 +21,12 @@ import retrofit2.Response;
 public class ContactsRepository implements Repository{
 
     @Override
-    public LiveData<ContactApiResponse> getConstacts(final Context context) {
-        final MutableLiveData<ContactApiResponse> contacts = new MutableLiveData<>();
+    public void getConstacts(final MutableLiveData<ContactApiResponse> mutableLiveData) {
         ContactApiAdapter.getApiService().getContactList().enqueue(new ResponseContactCallBack() {
             @Override
             public void onResponse(@NonNull Call<ArrayList<Contact>> call, @NonNull Response<ArrayList<Contact>> response) {
                 if(response.isSuccessful())
-                    contacts.setValue(new ContactApiResponse(sortByLastNameAndFirstName(response.body())));
+                    mutableLiveData.setValue(new ContactApiResponse(sortByLastNameAndFirstName(response.body())));
                 else{
                     int message;
                     switch (response.code()) {
@@ -42,7 +39,7 @@ public class ContactsRepository implements Repository{
                         default:
                             message = R.string.unknown_error;
                     }
-                    contacts.setValue(new ContactApiResponse(message));
+                    mutableLiveData.setValue(new ContactApiResponse(message));
                 }
             }
 
@@ -53,11 +50,9 @@ public class ContactsRepository implements Repository{
                     message = R.string.network_failed;
                 else
                     message = R.string.parse_error;
-                contacts.setValue(new ContactApiResponse(message));
+                mutableLiveData.setValue(new ContactApiResponse(message));
             }
         });
-
-        return contacts;
     }
 
     private ArrayList<Contact> sortByLastNameAndFirstName(ArrayList<Contact> list){

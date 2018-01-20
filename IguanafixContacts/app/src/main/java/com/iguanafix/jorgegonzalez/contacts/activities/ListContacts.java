@@ -53,7 +53,6 @@ public class ListContacts extends AppCompatActivity implements /*ContactViewMode
 
     private void createViewModel(){
         mViewModel = ViewModelProviders.of(this).get(ContactViewModel.class);
-        mViewModel.loadContacts(this);
         mViewModel.getListContacts().observe(this, new Observer<ContactApiResponse>() {
 
             @Override
@@ -69,10 +68,10 @@ public class ListContacts extends AppCompatActivity implements /*ContactViewMode
                         mRetryButton.setVisibility(View.VISIBLE);
                     }
                     mProgressContact.setVisibility(View.GONE);
-
                 }
             }
         });
+        mViewModel.loadContacts();
     }
 
     private void initComponents(){
@@ -108,5 +107,6 @@ public class ListContacts extends AppCompatActivity implements /*ContactViewMode
     public void onRetryListContact(){
         mRetryButton.setVisibility(View.GONE);
         mProgressContact.setVisibility(View.VISIBLE);
+        mViewModel.loadContacts();
     }
 }

@@ -1,7 +1,6 @@
 package com.iguanafix.jorgegonzalez.contacts.repositories;
 
-import android.arch.lifecycle.LiveData;
-import android.content.Context;
+import android.arch.lifecycle.MutableLiveData;
 
 import com.iguanafix.jorgegonzalez.contacts.response.ContactApiResponse;
 
@@ -11,5 +10,5 @@ import com.iguanafix.jorgegonzalez.contacts.response.ContactApiResponse;
  */
 
 public interface Repository {
-    LiveData<ContactApiResponse> getConstacts(Context context);
+    void getConstacts(MutableLiveData<ContactApiResponse> mutableLiveData);
 }
