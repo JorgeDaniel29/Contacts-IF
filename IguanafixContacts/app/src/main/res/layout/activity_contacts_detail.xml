@@ -60,7 +60,8 @@
 
         <include
             android:id="@+id/content_detail"
-            layout="@layout/content_contacts_detail" />
+            layout="@layout/content_contacts_detail"
+            android:visibility="gone"/>
 
     </FrameLayout>
 

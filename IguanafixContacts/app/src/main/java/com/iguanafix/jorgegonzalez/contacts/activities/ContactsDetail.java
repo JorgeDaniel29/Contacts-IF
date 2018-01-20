@@ -1,10 +1,11 @@
 package com.iguanafix.jorgegonzalez.contacts.activities;
 
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -18,13 +19,14 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.iguanafix.jorgegonzalez.contacts.R;
 import com.iguanafix.jorgegonzalez.contacts.dtos.Phone;
+import com.iguanafix.jorgegonzalez.contacts.response.ContactApiResponse;
 import com.iguanafix.jorgegonzalez.contacts.viewmodel.ContactViewModel;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class ContactsDetail extends AppCompatActivity implements ContactViewModel.LoadingData{
+public class ContactsDetail extends AppCompatActivity{
     private static final String CONTACT_KEY = "CONTACT_KEY";
     private ContactViewModel mViewModel;
     @BindView(R.id.toolbar)
@@ -69,8 +71,35 @@ public class ContactsDetail extends AppCompatActivity implements ContactViewMode
 
     private void createViewModel(){
         mViewModel = ViewModelProviders.of(this).get(ContactViewModel.class);
-        mViewModel.setListener(this);
-        mViewModel.getContactDetail(this,getIntent().getStringExtra(CONTACT_KEY));
+
+        mViewModel.loadContact(getIntent().getStringExtra(CONTACT_KEY));
+        mViewModel.getContact().observe(this, new Observer<ContactApiResponse>() {
+            @Override
+            public void onChanged(@Nullable ContactApiResponse contactApiResponse) {
+                if (contactApiResponse != null) {
+                    if (!contactApiResponse.getmHasError()) {
+                        mViewModel.setmContact(contactApiResponse.getmContact());
+
+                        mThumb.setImageURI(mViewModel.getmContact().getmThumb());
+                        mContactName.setText(getString(R.string.fullname).replace("{LASTNAME}", mViewModel.getmContact().getmLastName())
+                                .replace("{FIRSTNAME}",mViewModel.getmContact().getmFirstName()));
+
+                        mCreation.setText(mViewModel.getmContact().getmCreatedAtFormat());
+                        mBirthDate.setText(mViewModel.getmContact().getmBirthDateFormat());
+                        mHomeAddress.setText(mViewModel.getmContact().getmAddresses().getmHome());
+                        mWorkAddress.setText(mViewModel.getmContact().getmAddresses().getmWork());
+                        mContentView.setVisibility(View.VISIBLE);
+                        mRetryButton.setVisibility(View.GONE);
+
+                    }else{
+                        mContentView.setVisibility(View.GONE);
+                        mRetryButton.setVisibility(View.VISIBLE);
+                        Toast.makeText(mContext, contactApiResponse.getmMessageError(), Toast.LENGTH_SHORT).show();
+                    }
+                    mProgressContact.setVisibility(View.GONE);
+                }
+            }
+        });
     }
 
     private void initComponents(){
@@ -89,37 +118,6 @@ public class ContactsDetail extends AppCompatActivity implements ContactViewMode
                 onBackPressed();
             }
         });
-    }
-
-    @Override
-    public void onLoadData() {
-        mThumb.setImageURI(mViewModel.getmContact().getmThumb());
-        mContactName.setText(getString(R.string.fullname).replace("{LASTNAME}", mViewModel.getmContact().getmLastName())
-                .replace("{FIRSTNAME}",mViewModel.getmContact().getmFirstName()));
-
-        mCreation.setText(mViewModel.getmContact().getmCreatedAtFormat());
-        mBirthDate.setText(mViewModel.getmContact().getmBirthDateFormat());
-        mHomeAddress.setText(mViewModel.getmContact().getmAddresses().getmHome());
-        mWorkAddress.setText(mViewModel.getmContact().getmAddresses().getmWork());
-        mContentView.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void onRequestingData() {
-        mProgressContact.setVisibility(View.VISIBLE);
-        mContentView.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void onRequestFinished(Boolean finishOk) {
-        if(finishOk) {
-            mContentView.setVisibility(View.VISIBLE);
-            mRetryButton.setVisibility(View.GONE);
-        }else{
-            mContentView.setVisibility(View.GONE);
-            mRetryButton.setVisibility(View.VISIBLE);
-        }
-        mProgressContact.setVisibility(View.GONE);
     }
 
     @OnClick({R.id.house_button, R.id.cellphone_button, R.id.office_button})
@@ -153,9 +151,10 @@ public class ContactsDetail extends AppCompatActivity implements ContactViewMode
     }
 
     @OnClick(R.id.retry_button)
-    public void onRetryListContact(){
+    public void onRetryContact(){
         mRetryButton.setVisibility(View.GONE);
-        mViewModel.getContactDetail(this,getIntent().getStringExtra(CONTACT_KEY));
+        mProgressContact.setVisibility(View.VISIBLE);
+        mViewModel.loadContact(getIntent().getStringExtra(CONTACT_KEY));
     }
 
 }

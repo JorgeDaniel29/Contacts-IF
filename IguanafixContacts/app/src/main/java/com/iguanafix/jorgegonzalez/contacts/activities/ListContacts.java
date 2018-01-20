@@ -18,18 +18,15 @@ import com.iguanafix.jorgegonzalez.contacts.adapter.ContactListAdapter;
 import com.iguanafix.jorgegonzalez.contacts.R;
 import com.iguanafix.jorgegonzalez.contacts.adapter.ContactViewHolder;
 import com.iguanafix.jorgegonzalez.contacts.customclass.CustomLayoutManager;
-import com.iguanafix.jorgegonzalez.contacts.dtos.Contact;
 import com.iguanafix.jorgegonzalez.contacts.response.ContactApiResponse;
-import com.iguanafix.jorgegonzalez.contacts.utils.NetworkChangeReceiver;
 import com.iguanafix.jorgegonzalez.contacts.viewmodel.ContactViewModel;
 
-import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class ListContacts extends AppCompatActivity implements /*ContactViewModel.LoadingData,*/ ContactViewHolder.ScrollPosition {
+public class ListContacts extends AppCompatActivity implements ContactViewHolder.ScrollPosition {
     private ContactViewModel mViewModel;
     private ContactListAdapter mAdapter;
     @BindView(R.id.list_contact)
@@ -53,6 +50,7 @@ public class ListContacts extends AppCompatActivity implements /*ContactViewMode
 
     private void createViewModel(){
         mViewModel = ViewModelProviders.of(this).get(ContactViewModel.class);
+        mViewModel.loadContacts();
         mViewModel.getListContacts().observe(this, new Observer<ContactApiResponse>() {
 
             @Override
@@ -71,7 +69,6 @@ public class ListContacts extends AppCompatActivity implements /*ContactViewMode
                 }
             }
         });
-        mViewModel.loadContacts();
     }
 
     private void initComponents(){
