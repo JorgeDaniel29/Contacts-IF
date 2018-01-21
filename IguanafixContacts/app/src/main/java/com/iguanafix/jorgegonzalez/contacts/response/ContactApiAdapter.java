@@ -7,9 +7,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ContactApiAdapter {
     private static ContactsApiServices mInstance;
-    private static String mBaseUrl = "https://private-d0cc1-iguanafixtest.apiary-mock.com";
 
     public static ContactsApiServices getApiService(){
+
+        String mBaseUrl = "https://private-d0cc1-iguanafixtest.apiary-mock.com";
 
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();

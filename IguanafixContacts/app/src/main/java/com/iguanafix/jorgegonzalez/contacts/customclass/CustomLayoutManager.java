@@ -24,8 +24,6 @@ public class CustomLayoutManager extends LinearLayoutManager {
         LinearSmoothScroller smoothScroller =
                 new LinearSmoothScroller(mContext) {
 
-                    //This controls the direction in which smoothScroll looks
-                    //for your view
                     @Override
                     public PointF computeScrollVectorForPosition
                     (int targetPosition) {
@@ -33,8 +31,6 @@ public class CustomLayoutManager extends LinearLayoutManager {
                                 .computeScrollVectorForPosition(targetPosition);
                     }
 
-                    //This returns the milliseconds it takes to
-                    //scroll one pixel.
                     @Override
                     protected float calculateSpeedPerPixel
                     (DisplayMetrics displayMetrics) {

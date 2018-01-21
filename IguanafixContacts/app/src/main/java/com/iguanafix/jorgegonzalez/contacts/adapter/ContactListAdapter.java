@@ -1,6 +1,5 @@
 package com.iguanafix.jorgegonzalez.contacts.adapter;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -16,10 +15,10 @@ public class ContactListAdapter extends RecyclerView.Adapter<BaseViewHolder> {
     private final static int CONTACT_VIEW = 1;
 
     private ArrayList<Contact> mData = new ArrayList<>();
-    private Context mContext;
+    private ContactViewHolder.ScrollPosition mScrollPosition;
 
-    public ContactListAdapter(Context context) {
-        this.mContext = context;
+    public ContactListAdapter(ContactViewHolder.ScrollPosition listener) {
+        this.mScrollPosition = listener;
     }
 
     @Override
@@ -27,9 +26,9 @@ public class ContactListAdapter extends RecyclerView.Adapter<BaseViewHolder> {
         BaseViewHolder holder;
 
         if(viewType == SEPARATOR_HEADER_VIEW)
-            holder = new SeparatorViewHolder(LayoutInflater.from(mContext).inflate(R.layout.separator_contact, parent, false));
+            holder = new SeparatorViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.separator_contact, parent, false));
         else
-            holder = new ContactViewHolder(LayoutInflater.from(mContext).inflate(R.layout.contact_item, parent, false), (ContactViewHolder.ScrollPosition) mContext);
+            holder = new ContactViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.contact_item, parent, false), mScrollPosition);
 
         return holder;
     }

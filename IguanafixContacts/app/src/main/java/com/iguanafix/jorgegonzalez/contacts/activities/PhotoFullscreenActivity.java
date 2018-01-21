@@ -1,5 +1,6 @@
 package com.iguanafix.jorgegonzalez.contacts.activities;
 
+import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -11,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.generic.RoundingParams;
@@ -24,11 +26,7 @@ import com.iguanafix.jorgegonzalez.contacts.customclass.ControllerListenerImage;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-/**
- * An example full-screen activity that shows and hides the system UI (i.e.
- * status bar and navigation/system bar) with user interaction.
- */
-public class PhotoFullscreenActivity extends AppCompatActivity implements ControllerListenerImage.LoadingImage{
+public class PhotoFullscreenActivity extends AppCompatActivity{
     public final static String PHOTO_KEY = "PHOTO_KEY";
     private static final String NAME_KEY = "NAME_KEY";
     @BindView(R.id.photo)
@@ -39,6 +37,8 @@ public class PhotoFullscreenActivity extends AppCompatActivity implements Contro
     Toolbar mToolbarPhotoFullScreen;
     @BindView(R.id.name_contact_title)
     TextView mNameContact;
+
+    private Context mContext;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -54,6 +54,7 @@ public class PhotoFullscreenActivity extends AppCompatActivity implements Contro
     }
 
     private void initComponent(){
+        mContext = this;
         String photoUrl = null;
         String nameContact = null;
 
@@ -69,9 +70,27 @@ public class PhotoFullscreenActivity extends AppCompatActivity implements Contro
                 .setProgressiveRenderingEnabled(false)
                 .build();
 
+        ControllerListenerImage listenerImage = new ControllerListenerImage();
+        listenerImage.getmSatisfactoryImage().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean aBoolean) {
+                mProgressBarFullImage.setVisibility(View.GONE);
+                if(aBoolean != null && aBoolean){
+                    int color = getResources().getColor(R.color.blue400);
+                    RoundingParams roundingParams = RoundingParams.fromCornersRadius(5f);
+                    roundingParams.setBorder(color,10.0f);
+                    roundingParams.setRoundAsCircle(true);
+                    mPhotoFullScreen.getHierarchy().setRoundingParams(roundingParams);
+                }
+                else
+                    Toast.makeText(mContext, R.string.not_load_image,Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
         DraweeController controller = Fresco.newDraweeControllerBuilder()
                 .setImageRequest(request)
-                .setControllerListener(new ControllerListenerImage(this))
+                .setControllerListener(listenerImage)
                 .build();
 
         mPhotoFullScreen.setController(controller);
@@ -91,17 +110,5 @@ public class PhotoFullscreenActivity extends AppCompatActivity implements Contro
                 onBackPressed();
             }
         });
-    }
-
-    @Override
-    public void onRequestFinished(Boolean finishOk) {
-        mProgressBarFullImage.setVisibility(View.GONE);
-        if(finishOk){
-            int color = getResources().getColor(R.color.blue400);
-            RoundingParams roundingParams = RoundingParams.fromCornersRadius(5f);
-            roundingParams.setBorder(color,10.0f);
-            roundingParams.setRoundAsCircle(true);
-            mPhotoFullScreen.getHierarchy().setRoundingParams(roundingParams);
-        }
     }
 }

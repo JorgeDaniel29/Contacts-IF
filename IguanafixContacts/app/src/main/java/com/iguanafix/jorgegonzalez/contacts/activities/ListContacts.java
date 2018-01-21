@@ -1,7 +1,9 @@
 package com.iguanafix.jorgegonzalez.contacts.activities;
 
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.IntentFilter;
+import android.content.Context;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
@@ -9,20 +11,22 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.iguanafix.jorgegonzalez.contacts.adapter.ContactListAdapter;
 import com.iguanafix.jorgegonzalez.contacts.R;
 import com.iguanafix.jorgegonzalez.contacts.adapter.ContactViewHolder;
 import com.iguanafix.jorgegonzalez.contacts.customclass.CustomLayoutManager;
-import com.iguanafix.jorgegonzalez.contacts.utils.NetworkChangeReceiver;
+import com.iguanafix.jorgegonzalez.contacts.response.ContactApiResponse;
 import com.iguanafix.jorgegonzalez.contacts.viewmodel.ContactViewModel;
+
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class ListContacts extends AppCompatActivity implements ContactViewModel.LoadingData, ContactViewHolder.ScrollPosition {
+public class ListContacts extends AppCompatActivity implements ContactViewHolder.ScrollPosition {
     private ContactViewModel mViewModel;
     private ContactListAdapter mAdapter;
     @BindView(R.id.list_contact)
@@ -33,7 +37,7 @@ public class ListContacts extends AppCompatActivity implements ContactViewModel.
     public ProgressBar mProgressContact;
     @BindView(R.id.retry_button)
     public Button mRetryButton;
-    private NetworkChangeReceiver mNetworkChangeReceiver;
+    private Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,11 +50,29 @@ public class ListContacts extends AppCompatActivity implements ContactViewModel.
 
     private void createViewModel(){
         mViewModel = ViewModelProviders.of(this).get(ContactViewModel.class);
-        mViewModel.setListener(this);
-        mViewModel.getListConstact(this);
+        mViewModel.loadContactList();
+        mViewModel.getListContacts().observe(this, new Observer<ContactApiResponse>() {
+
+            @Override
+            public void onChanged(@Nullable ContactApiResponse contactApiResponse) {
+                if (contactApiResponse != null) {
+                    if (!contactApiResponse.getmHasError()) {
+                        mAdapter.setmData(contactApiResponse.getmConstacts());
+                        mListContact.setVisibility(View.VISIBLE);
+                        mRetryButton.setVisibility(View.GONE);
+                    } else {
+                        Toast.makeText(mContext, contactApiResponse.getmMessageError(), Toast.LENGTH_SHORT).show();
+                        mListContact.setVisibility(View.GONE);
+                        mRetryButton.setVisibility(View.VISIBLE);
+                    }
+                    mProgressContact.setVisibility(View.GONE);
+                }
+            }
+        });
     }
 
     private void initComponents(){
+        mContext = this;
         Fresco.initialize(this);
 
         setSupportActionBar(mSearchToolbar);
@@ -71,29 +93,6 @@ public class ListContacts extends AppCompatActivity implements ContactViewModel.
         mListContact.setAdapter(mAdapter);
     }
 
-    @Override
-    public void onLoadData() {
-        mAdapter.setmData(mViewModel.getContacts());
-        mListContact.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void onRequestingData() {
-        mProgressContact.setVisibility(View.VISIBLE);
-        mListContact.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void onRequestFinished(Boolean finishOk) {
-        if(finishOk) {
-            mListContact.setVisibility(View.VISIBLE);
-            mRetryButton.setVisibility(View.GONE);
-        }else{
-            mListContact.setVisibility(View.GONE);
-            mRetryButton.setVisibility(View.VISIBLE);
-        }
-        mProgressContact.setVisibility(View.GONE);
-    }
 
     @Override
     public void onScroll(int position) {
@@ -104,6 +103,7 @@ public class ListContacts extends AppCompatActivity implements ContactViewModel.
     @OnClick(R.id.retry_button)
     public void onRetryListContact(){
         mRetryButton.setVisibility(View.GONE);
-        mViewModel.getListConstact(this);
+        mProgressContact.setVisibility(View.VISIBLE);
+        mViewModel.loadContactList();
     }
 }
