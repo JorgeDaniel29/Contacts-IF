@@ -5,7 +5,7 @@ import com.iguanafix.jorgegonzalez.contacts.dtos.Contact;
 
 import java.util.ArrayList;
 
-public class ContactApiResponse {
+public class ContactApiResponse <T>{
     private ArrayList<Contact> mConstacts;
     private Contact mContact;
     private Integer mMessageError;
@@ -13,19 +13,21 @@ public class ContactApiResponse {
 
     public ContactApiResponse(ArrayList<Contact> constacts) {
         this.mConstacts = constacts;
+        this.mContact = null;
         this.mMessageError = null;
         this.mHasError = false;
     }
 
     public ContactApiResponse(Contact contact) {
-        this.mContact = contact;
         this.mConstacts = null;
+        this.mContact = contact;
         this.mMessageError = null;
         this.mHasError = false;
     }
 
     public ContactApiResponse(int messageError) {
         this.mConstacts = null;
+        this.mContact = null;
         this.mMessageError = messageError;
         this.mHasError = true;
     }

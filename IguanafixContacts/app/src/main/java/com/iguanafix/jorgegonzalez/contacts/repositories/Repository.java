@@ -10,6 +10,6 @@ import com.iguanafix.jorgegonzalez.contacts.response.ContactApiResponse;
  */
 
 public interface Repository {
-    void getConstacts(MutableLiveData<ContactApiResponse> mutableLiveData);
+    void getConstactList(MutableLiveData<ContactApiResponse> mutableLiveData);
     void getConstact(MutableLiveData<ContactApiResponse> mutableLiveData, String contactId);
 }

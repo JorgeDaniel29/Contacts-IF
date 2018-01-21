@@ -50,7 +50,7 @@ public class ListContacts extends AppCompatActivity implements ContactViewHolder
 
     private void createViewModel(){
         mViewModel = ViewModelProviders.of(this).get(ContactViewModel.class);
-        mViewModel.loadContacts();
+        mViewModel.loadContactList();
         mViewModel.getListContacts().observe(this, new Observer<ContactApiResponse>() {
 
             @Override
@@ -104,6 +104,6 @@ public class ListContacts extends AppCompatActivity implements ContactViewHolder
     public void onRetryListContact(){
         mRetryButton.setVisibility(View.GONE);
         mProgressContact.setVisibility(View.VISIBLE);
-        mViewModel.loadContacts();
+        mViewModel.loadContactList();
     }
 }

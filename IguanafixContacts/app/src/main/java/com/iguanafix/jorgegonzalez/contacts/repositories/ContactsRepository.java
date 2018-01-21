@@ -22,7 +22,7 @@ import retrofit2.Response;
 public class ContactsRepository implements Repository{
 
     @Override
-    public void getConstacts(final MutableLiveData<ContactApiResponse> mutableLiveData) {
+    public void getConstactList(final MutableLiveData<ContactApiResponse> mutableLiveData) {
         ContactApiAdapter.getApiService().getContactList().enqueue(new ResponseContactCallBack() {
             @Override
             public void onResponse(@NonNull Call<ArrayList<Contact>> call, @NonNull Response<ArrayList<Contact>> response) {
@@ -60,7 +60,7 @@ public class ContactsRepository implements Repository{
     public void getConstact(final MutableLiveData<ContactApiResponse> mutableLiveData, String contactId) {
         ContactApiAdapter.getApiService().getContactDetail(contactId).enqueue(new ResponseContactDetailCallBack() {
             @Override
-            public void onResponse(Call<Contact> call, Response<Contact> response) {
+            public void onResponse(@NonNull Call<Contact> call, @NonNull Response<Contact> response) {
                 if(response.isSuccessful())
                     mutableLiveData.setValue(new ContactApiResponse(response.body()));
                 else{
@@ -80,7 +80,7 @@ public class ContactsRepository implements Repository{
             }
 
             @Override
-            public void onFailure(Call<Contact> call, Throwable t) {
+            public void onFailure(@NonNull Call<Contact> call, @NonNull Throwable t) {
                 int message;
                 if (t instanceof IOException)
                     message = R.string.network_failed;

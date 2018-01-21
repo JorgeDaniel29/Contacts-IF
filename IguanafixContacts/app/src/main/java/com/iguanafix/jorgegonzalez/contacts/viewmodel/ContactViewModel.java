@@ -23,8 +23,8 @@ public class ContactViewModel extends ViewModel {
         this.mContact = mContact;
     }
 
-    public void loadContacts(){
-        mRepository.getConstacts(mLiveListContacts);
+    public void loadContactList(){
+        mRepository.getConstactList(mLiveListContacts);
     }
 
     public LiveData<ContactApiResponse> getListContacts(){
