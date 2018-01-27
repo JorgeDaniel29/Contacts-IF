@@ -14,6 +14,12 @@
   * [Fresco](http://frescolib.org/docs/index.html) para la carga y modelado de las imagenes.
   * [Retrofit](http://square.github.io/retrofit/) para las consultas http.
   
+## Screens
+  <img src="https://github.com/JorgeDaniel29/Contacts-IF/blob/master/Recursos/screen_1.png" width="300" height="500">
+  <img src="https://github.com/JorgeDaniel29/Contacts-IF/blob/master/Recursos/screen_2.png" width="300" height="500">
+  <img src="https://github.com/JorgeDaniel29/Contacts-IF/blob/master/Recursos/screen_3.png" width="300" height="500">
+  <img src="https://github.com/JorgeDaniel29/Contacts-IF/blob/master/Recursos/screen_4.png" width="300" height="500">
+  
 ## Autor
   
   * [Jorge Daniel Gonzalez](https://www.linkedin.com/in/jorge-daniel-gonzalez-8783a2112/)
