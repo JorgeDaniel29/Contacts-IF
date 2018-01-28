@@ -16,6 +16,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro', 'proguard-fresco.pro'
         }
     }
+
+    dataBinding {
+        enabled = true
+    }
+
 }
 
 dependencies {
@@ -36,8 +41,8 @@ dependencies {
     compile 'com.facebook.fresco:fresco:1.7.1'
     compile 'com.jakewharton:butterknife:8.8.1'
     compile 'com.android.support:cardview-v7:+'
-    compile 'android.arch.lifecycle:runtime:1.0.0-alpha9'
-    compile 'android.arch.lifecycle:extensions:1.0.0-alpha9'
-    annotationProcessor 'android.arch.lifecycle:compiler:1.0.0-alpha9'
+    compile 'android.arch.lifecycle:runtime:1.1.0'
+    compile 'android.arch.lifecycle:extensions:1.1.0'
+    annotationProcessor 'android.arch.lifecycle:compiler:1.1.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
 }
